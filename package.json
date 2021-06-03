@@ -1,0 +1,22 @@
+{
+  "name": "spacer-api-ex",
+  "version": "1.0.0",
+  "description": "https://www.notion.so/SPACER-API-5d3f6b8831be484e94497ac822099270",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spacer-dev/SPACER-API-EX.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spacer-dev/SPACER-API-EX/issues"
+  },
+  "homepage": "https://github.com/spacer-dev/SPACER-API-EX#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
