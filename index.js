@@ -1,7 +1,6 @@
 const https = require('https')
-const qs = require('querystring')
-const api_key = 'UXbix0Dg8MBswViH1pdE9dyiOJ4PXKhpl1h4uva'
-// const api_key = 'YOUR_API_KEY'
+const api_key = 'YOUR_API_KEY'
+// const api_key = 'UXbix0Dg8MBswViH1pdE9dyiOJ4PXKhpl1h4uva' ← 
 
 const error_dict = {
   'E90000001' : '予期しないエラーが発生',
