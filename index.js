@@ -451,6 +451,7 @@ app.get('/userToken', async function(req, res, next){
   }else{
     console.log(result)
 // {
+//     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlLZXlJZCI6InA0Tmwwa1NhY1hWbnRlbUhnWk1hSFpyMXAyMlhSVExmaDNtYjd5TSIsInVzZXJJZCI6Ii1NX2NWNzY0Q2RwaUVCdTVQRW40IiwiaWF0IjoxNjIzNzM1OTgyLCJleHAiOjE2MjM4MjIzODJ9._5W7-gR-Eq7axgsCIVNHF3DMbJUEFcLU3efCDRrF3DQ",
 //     "result": true
 // }
     res.send('success')
