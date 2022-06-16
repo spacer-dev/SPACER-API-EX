@@ -22,6 +22,7 @@ const error_dict = {
   'E11007103' : 'ロッカーのステータスは「利用中」ではありません',
   'E11007104' : 'ロッカーのステータスは「制限中」です',
   'E11008002' : '使用中のロッカーは存在しません',
+  'E11007113' : 'ロッカーのステータスが「利用中」です',
   'E11008003' : '使用中のロッカーはお客様企業で作成されたものではありません',
   'E11008004' : '使用中のロッカーは有効期限が切れました',
   'E11008102' : '使用中のロッカーのステータスは「予約中」ではありません',
@@ -32,6 +33,7 @@ const error_dict = {
   'E11010011' : '鍵の生成に失敗しました',
   'E11010012' : 'BLE読み込み結果が正しくありません',
   'E11010013' : '施錠に失敗しました',
+  'E11008113' : '使用中のロッカーのステータスが「利用中」です',
 }
 
 const express = require('express')
@@ -278,7 +280,6 @@ app.get('/keyGet', async function(req, res, next){
 // No.9 鍵解錠API sample
 app.get('/keyGetResult', async function(req, res, next){
   const user = {
-    "clientUserId": "client_001",
     "userId": "-M_cV764CdpiEBu5PEn4",
     "spacerId": "SPACER055",
     // 解錠コマンドをBLEで送信後、再度BLEでReadした結果をこちらに追加します。
@@ -299,13 +300,46 @@ app.get('/keyGetResult', async function(req, res, next){
   }
 })
 
-// No.10 ロッカー取得API sample
+// No.10 ロッカーボックス取得API sample
 app.get('/lockerGet', async function(req, res, next){
   const user = {
     "userId": "-M_cV764CdpiEBu5PEn4",
-    "unitIds":["05","06"]
+    "spacerIds":["SPACER055","SPACER057"]
   }
-  const result = await reqestTemplate('/locker/get', user)
+  const result = await reqestTemplate('/locker/spacer/get', user)
+  // エラーの場合
+  if( !result.hasOwnProperty('result') || !result['result'] ){
+    const error_code = result['error']['code']
+    console.log( error_dict[error_code] )
+    res.send('failure')
+  }else{
+    console.log(result)
+// {
+//   "spacers": [
+//     {
+//       "id": "SPACER055",
+//       "status": "available",
+//       "size": "小"
+//     },
+//     {
+//       "id": "SPACER057",
+//       "status": "restricted",
+//       "size": "小"
+//     }
+//   ],
+//   "result": true
+// }
+    res.send('success')
+  }
+})
+
+// No.11 ロッカーユニット取得API sample
+app.get('/lockerUnitGet', async function(req, res, next){
+  const user = {
+    "userId": "-M_cV764CdpiEBu5PEn4",
+    "unitIds":["05","06"],
+  }
+  const result = await reqestTemplate('/locker/unit/get', user)
   // エラーの場合
   if( !result.hasOwnProperty('result') || !result['result'] ){
     const error_code = result['error']['code']
@@ -403,6 +437,138 @@ app.get('/lockerGet', async function(req, res, next){
   }
 })
 
+// No.12 ユーザートークン発行API sample
+app.get('/userToken', async function(req, res, next){
+  const user = {
+    "userId": "-M_cV764CdpiEBu5PEn4",
+  }
+  const result = await reqestTemplate('/user/token', user)
+  // エラーの場合
+  if( !result.hasOwnProperty('result') || !result['result'] ){
+    const error_code = result['error']['code']
+    console.log( error_dict[error_code] )
+    res.send('failure')
+  }else{
+    console.log(result)
+// {
+//     "result": true
+// }
+    res.send('success')
+  }
+})
+
+// No.13 拠点ID取得API sample
+app.get('/location', async function(req, res, next){
+  const user = {
+    "locationId": "location101",
+    "userId": "-M_cV764CdpiEBu5PEn4",
+  }
+  const result = await reqestTemplate('/location/get', user)
+  // エラーの場合
+  if( !result.hasOwnProperty('result') || !result['result'] ){
+    const error_code = result['error']['code']
+    console.log( error_dict[error_code] )
+    res.send('failure')
+  }else{
+    console.log(result)
+// {
+//   "location": {
+//     "id": "location101",
+//     "name": "拠点名101",
+//     "detail": "駅前 test555"
+//     "open": "0:00",
+//     "close": "24:00",
+//     "address": "東京都渋谷区代々木神園町２−２",
+//     "units": [
+//       {
+//         "id": "05",
+//         "open": null,
+//         "close": null,
+//         "address": "東京都渋谷区代々木神園町２−１",
+//         "dispOrder": 1,
+//         "lockerType": 1,
+//         "spacers": [
+//           {
+//             "id": "SPACER051",
+//             "status": "available",
+//             "size": null,
+//           },
+//           {
+//             "id": "SPACER052",
+//             "status": "available",
+//             "size": null,
+//           },
+//           {
+//             "id": "SPACER053",
+//             "status": "touchpanel",
+//             "size": "S"
+//           },
+//           {
+//             "id": "SPACER054",
+//             "status": "limited",
+//             "size": null,
+//           },
+//           {
+//             "id": "SPACER055",
+//             "status": "available",
+//             "size": "M",
+//           },
+//           {
+//             "id": "SPACER056",
+//             "status": "using",
+//             "size": "S",
+//           }
+//         ]
+//       },
+//       {
+//         "id": "06",
+//         "open": null,
+//         "close": null,
+//         "address": "546 台湾 南投縣仁愛鄉新生村",
+//         "dispOrder": 2,
+//         "lockerType": 2,
+//         "spacers": [
+//           {
+//             "id": "SPACER061",
+//             "status": "restricted",
+//             "size": "M",
+//           },
+//           {
+//             "id": "SPACER062",
+//             "status": "restricted",
+//             "size": "M",
+//           },
+//           {
+//             "id": "SPACER063",
+//             "status": "restricted",
+//             "size": "M",
+//           },
+//           {
+//             "id": "SPACER064",
+//             "status": "restricted",
+//             "size": "M",
+//           },
+//           {
+//             "id": "SPACER065",
+//             "status": "restricted",
+//             "size": "M",
+//           },
+//           {
+//             "id": "SPACER066",
+//             "status": "restricted",
+//             "size": "M",
+//           }
+//         ]
+//       }
+//     ]
+//   },
+//   "result": true
+// }
+    res.send('success')
+  }
+})
+
+
 
 async function reqestTemplate(path, obj){
   addApiKey(obj)
@@ -416,7 +582,8 @@ function addApiKey(obj){
 async function request(path, obj){
   const options = {
     'method': 'POST',
-    'hostname': 'ex-api.spacer.co.jp',
+    // 'hostname': 'ex-api.spacer.co.jp', // PROD
+    'hostname': 'stg-ex-api.spacer.cc', // STG
     'port': null,
     'path': path,
     'headers': {
